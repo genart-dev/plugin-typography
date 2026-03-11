@@ -7,7 +7,22 @@ import type {
   ValidationError,
 } from "@genart-dev/core";
 import { renderText } from "./text-render.js";
+import { renderTextSVG } from "./text-render-svg.js";
 import { BUILT_IN_FONTS } from "./fonts.js";
+
+const WEIGHT_OPTIONS = [
+  { value: "100", label: "Thin" },
+  { value: "200", label: "Extra Light" },
+  { value: "300", label: "Light" },
+  { value: "400", label: "Regular" },
+  { value: "500", label: "Medium" },
+  { value: "600", label: "Semi Bold" },
+  { value: "700", label: "Bold" },
+  { value: "800", label: "Extra Bold" },
+  { value: "900", label: "Black" },
+];
+
+const VALID_WEIGHTS = new Set(WEIGHT_OPTIONS.map((o) => o.value));
 
 const TEXT_PROPERTIES: LayerPropertySchema[] = [
   {
@@ -41,10 +56,7 @@ const TEXT_PROPERTIES: LayerPropertySchema[] = [
     type: "select",
     default: "400",
     group: "font",
-    options: [
-      { value: "400", label: "Regular" },
-      { value: "700", label: "Bold" },
-    ],
+    options: WEIGHT_OPTIONS,
   },
   {
     key: "fontStyle",
@@ -55,6 +67,64 @@ const TEXT_PROPERTIES: LayerPropertySchema[] = [
     options: [
       { value: "normal", label: "Normal" },
       { value: "italic", label: "Italic" },
+    ],
+  },
+  {
+    key: "customFont",
+    label: "Custom Font",
+    type: "string",
+    default: "",
+    group: "font",
+  },
+  {
+    key: "letterSpacing",
+    label: "Letter Spacing",
+    type: "number",
+    default: 0,
+    min: -50,
+    max: 200,
+    step: 0.5,
+    group: "spacing",
+  },
+  {
+    key: "tracking",
+    label: "Tracking",
+    type: "number",
+    default: 0,
+    min: -100,
+    max: 500,
+    step: 1,
+    group: "spacing",
+  },
+  {
+    key: "kerning",
+    label: "Kerning",
+    type: "select",
+    default: "metrics",
+    group: "spacing",
+    options: [
+      { value: "metrics", label: "Metrics" },
+      { value: "optical", label: "Optical" },
+      { value: "none", label: "None" },
+    ],
+  },
+  {
+    key: "opticalAlign",
+    label: "Optical Alignment",
+    type: "boolean",
+    default: true,
+    group: "spacing",
+  },
+  {
+    key: "renderMode",
+    label: "Render Mode",
+    type: "select",
+    default: "auto",
+    group: "rendering",
+    options: [
+      { value: "auto", label: "Auto" },
+      { value: "text", label: "Text" },
+      { value: "path", label: "Path" },
     ],
   },
   {
@@ -199,30 +269,7 @@ export const textLayerType: LayerTypeDefinition = {
     bounds: LayerBounds,
     _resources: RenderResources,
   ): string {
-    const text = (properties.text as string) ?? "";
-    const fontSize = (properties.fontSize as number) ?? 48;
-    const fontFamily = (properties.fontFamily as string) ?? "Inter";
-    const fontWeight = (properties.fontWeight as string) ?? "400";
-    const fontStyle = (properties.fontStyle as string) ?? "normal";
-    const color = (properties.color as string) ?? "#ffffff";
-    const align = (properties.align as string) ?? "left";
-
-    let textAnchor = "start";
-    let x = bounds.x;
-    if (align === "center") {
-      textAnchor = "middle";
-      x = bounds.x + bounds.width / 2;
-    } else if (align === "right") {
-      textAnchor = "end";
-      x = bounds.x + bounds.width;
-    }
-
-    const escaped = text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-
-    return `<text x="${x}" y="${bounds.y + fontSize}" font-family="${fontFamily}" font-size="${fontSize}" font-weight="${fontWeight}" font-style="${fontStyle}" fill="${color}" text-anchor="${textAnchor}">${escaped}</text>`;
+    return renderTextSVG(properties, bounds);
   },
 
   validate(properties: LayerProperties): ValidationError[] | null {
@@ -241,10 +288,26 @@ export const textLayerType: LayerTypeDefinition = {
     }
 
     const fontWeight = properties.fontWeight;
-    if (fontWeight !== "400" && fontWeight !== "700") {
+    if (typeof fontWeight === "string" && !VALID_WEIGHTS.has(fontWeight)) {
       errors.push({
         property: "fontWeight",
-        message: "Font weight must be '400' or '700'",
+        message: "Font weight must be 100–900 in increments of 100",
+      });
+    }
+
+    const kerning = properties.kerning;
+    if (kerning !== undefined && kerning !== "metrics" && kerning !== "optical" && kerning !== "none") {
+      errors.push({
+        property: "kerning",
+        message: "Kerning must be 'metrics', 'optical', or 'none'",
+      });
+    }
+
+    const renderMode = properties.renderMode;
+    if (renderMode !== undefined && renderMode !== "auto" && renderMode !== "text" && renderMode !== "path") {
+      errors.push({
+        property: "renderMode",
+        message: "Render mode must be 'auto', 'text', or 'path'",
       });
     }
 

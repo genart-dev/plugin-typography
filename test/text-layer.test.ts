@@ -57,6 +57,13 @@ describe("textLayerType", () => {
     expect(defaults.align).toBe("left");
     expect(defaults.strokeEnabled).toBe(false);
     expect(defaults.shadowEnabled).toBe(false);
+    // New 0.2.0 properties
+    expect(defaults.letterSpacing).toBe(0);
+    expect(defaults.tracking).toBe(0);
+    expect(defaults.kerning).toBe("metrics");
+    expect(defaults.opticalAlign).toBe(true);
+    expect(defaults.renderMode).toBe("auto");
+    expect(defaults.customFont).toBe("");
   });
 
   describe("render", () => {

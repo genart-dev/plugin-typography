@@ -7,5 +7,5 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   splitting: false,
-  external: ["@genart-dev/core"],
+  external: ["@genart-dev/core", "opentype.js"],
 });
