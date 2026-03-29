@@ -10,3 +10,5 @@ test-renders/
 .pnp.cjs
 .pnp.loader.mjs
 .yarn/
+yarn.lock
+package-lock.json
