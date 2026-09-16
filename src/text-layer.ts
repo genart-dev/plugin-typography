@@ -241,6 +241,8 @@ const TEXT_PROPERTIES: LayerPropertySchema[] = [
 
 export const textLayerType: LayerTypeDefinition = {
   typeId: "typography:text",
+  // Sets type at the canvas's own resolution (ADR 111).
+  resolution: "device",
   displayName: "Text",
   icon: "type",
   category: "text",

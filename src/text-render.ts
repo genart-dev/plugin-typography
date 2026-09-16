@@ -16,7 +16,11 @@ export function renderText(
   const text = (properties.text as string) ?? "";
   if (!text) return;
 
-  const fontSize = (properties.fontSize as number) ?? 48;
+  // Device pixels per layout unit (ADR 111). Type is measured in points on the
+  // paper, so the size, the letter spacing and the stroke width scale with the
+  // buffer; the line height is a multiple of the size and follows on its own.
+  const dsc = bounds.scale ?? 1;
+  const fontSize = ((properties.fontSize as number) ?? 48) * dsc;
   const fontFamily = (properties.fontFamily as string) ?? "Inter";
   const fontWeight = (properties.fontWeight as string) ?? "400";
   const fontStyle = (properties.fontStyle as string) ?? "normal";
@@ -24,13 +28,13 @@ export function renderText(
   const align = (properties.align as string) ?? "left";
   const baseline = (properties.baseline as string) ?? "top";
   const lineHeight = (properties.lineHeight as number) ?? 1.2;
-  const letterSpacing = (properties.letterSpacing as number) ?? 0;
+  const letterSpacing = ((properties.letterSpacing as number) ?? 0) * dsc;
   const tracking = (properties.tracking as number) ?? 0;
   const kerning = (properties.kerning as string) ?? "metrics";
 
   const strokeEnabled = (properties.strokeEnabled as boolean) ?? false;
   const strokeColor = (properties.strokeColor as string) ?? "#000000";
-  const strokeWidth = (properties.strokeWidth as number) ?? 2;
+  const strokeWidth = ((properties.strokeWidth as number) ?? 2) * dsc;
 
   const shadowEnabled = (properties.shadowEnabled as boolean) ?? false;
   const shadowColor = (properties.shadowColor as string) ?? "rgba(0,0,0,0.5)";
