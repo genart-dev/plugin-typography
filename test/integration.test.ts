@@ -146,7 +146,7 @@ describe("backward compatibility", () => {
   it("plugin exports all expected modules", () => {
     // Verify public API surface
     expect(typographyPlugin.id).toBe("typography");
-    expect(typographyPlugin.version).toBe("0.2.0");
+    expect(typographyPlugin.version).toBe("0.3.0");
     expect(typographyPlugin.layerTypes).toHaveLength(1);
     expect(typographyPlugin.mcpTools).toHaveLength(9);
   });

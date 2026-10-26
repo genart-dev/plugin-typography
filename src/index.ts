@@ -40,7 +40,7 @@ function getFontsDir(): string | null {
 const typographyPlugin: DesignPlugin = {
   id: "typography",
   name: "Typography",
-  version: "0.2.0",
+  version: "0.3.0",
   tier: "free",
   description:
     "Professional text layers with opentype.js kerning, optical alignment, " +

@@ -1,6 +1,6 @@
 {
   "name": "@genart-dev/plugin-typography",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Professional typography plugin for genart.dev — kerning, optical alignment, text-to-path, type scales",
   "type": "module",
   "main": "./dist/index.cjs",

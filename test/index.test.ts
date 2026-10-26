@@ -5,7 +5,7 @@ describe("typography plugin", () => {
   it("exports a valid DesignPlugin object", () => {
     expect(typographyPlugin.id).toBe("typography");
     expect(typographyPlugin.name).toBe("Typography");
-    expect(typographyPlugin.version).toBe("0.2.0");
+    expect(typographyPlugin.version).toBe("0.3.0");
     expect(typographyPlugin.tier).toBe("free");
   });
 
